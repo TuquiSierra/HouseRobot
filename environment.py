@@ -5,10 +5,11 @@ from cell import *
 class Environment:
     def __init__(self,m, n, kids, obstacles_percentage, dirt_percentage, dirt_prob=0.6, move_kid_prob=0.5):
         self.kids=kids
+        self.initial_kids=kids
         self.move_kid_prob=move_kid_prob
-        self.dirt=dirt_percentage*n*m//100
         self.dirt_prob=dirt_prob
         self.obstacles=obstacles_percentage*n*m//100
+        self.dirt=dirt_percentage*(n*m-self.obstacles-self.initial_kids)//100
         if 2*self.kids+self.obstacles+self.dirt+1>=m*n:
             raise Exception("INVALID ENVIRONMENT SPECIFICATIONS")
         self.environment=[]
@@ -32,7 +33,7 @@ class Environment:
         return board_string
 
     def is_chaos(self):
-        return (self.dirt*100)/((len(self.environment)*len(self.environment[0])))>=60
+        return (self.dirt*100)/((len(self.environment)*len(self.environment[0])-2*self.initial_kids-self.obstacles))>=60
     
     def is_neat(self):
         return self.dirt==0 and self.kids==0
@@ -47,6 +48,7 @@ class Environment:
             if not len(self.environment[x][y].items):
                 self.environment[x][y].items.append(ROBOT)
                 self.robot_position=(x, y)
+                self.robot_prev=(x, y)
                 break
 
     def __item_collocation__(self, elem_count, item):
@@ -75,6 +77,7 @@ class Environment:
                 new_y=y+neighbor[1]
                 if self.inside(new_x, new_y) and not marked[new_x][new_y]:
                     queue.append((new_x, new_y))
+            
                     
                     
     def variate(self):
@@ -85,8 +88,9 @@ class Environment:
                     rnd=random.random()
                     if rnd<self.move_kid_prob:
                         self.__move_kid__(i, j, kid_dirt)
-                        
-                        
+                    
+        
+                                          
     def __move_kid__(self, i, j, kid_dirt):
         rnd=random.randint(0,7)
         new_i=i+utils.NEIGHBORHOOD[rnd][0]
@@ -138,6 +142,7 @@ class Environment:
                 if rnd<self.dirt_prob:
                     self.environment[new_i][new_j].items=[DIRT]
                     self.dirt+=1
+                    count-=1
                     kid_dirt[new_i][new_j]=True
                     break
             

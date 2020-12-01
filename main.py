@@ -1,7 +1,8 @@
 from environment import Environment
-from robot import action
+from reactive_robot import action
 from tqdm import tqdm
 from colorama import Fore, Back, Style 
+import time
 
 
 class Main:
@@ -54,13 +55,17 @@ class Simulation:
     def simulate(self, n, t, verbose=False):
         self.environment=Environment(self.m, self.n, self.kids, self.obstacle_percentage, self.dirt_percentage)
         mean_dirt=0
-        for count in range(n):
+        for count in range(1,n):
             if verbose:
                 print(self.environment)
             mean_dirt+=self.environment.dirt
             if not count%t:
                 self.environment.variate()
+                if verbose:
+                    print(self.environment)
             action(self.environment)
+            if verbose:
+                time.sleep(0.8)
             
             if self.environment.is_chaos():
                 return "FAILURE", mean_dirt/count
@@ -86,6 +91,7 @@ m=Main([[3, 3, 1,  10, 10],
 
 m.start()
 
-single=Simulation(5, 5, 5, 10, 10)
-single.simulate(10, 2, True)
+print("EJEMPLO DE SIMULACIÓN de 15 PASOS:")
+single=Simulation(8, 8, 8, 10, 10)
+single.simulate(15, 2, True)
         
