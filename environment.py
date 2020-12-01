@@ -9,7 +9,7 @@ class Environment:
         self.move_kid_prob=move_kid_prob
         self.dirt_prob=dirt_prob
         self.obstacles=obstacles_percentage*n*m//100
-        self.dirt=dirt_percentage*(n*m-self.obstacles-self.initial_kids)//100
+        self.dirt=dirt_percentage*(n*m-self.obstacles-2*self.initial_kids)//100
         if 2*self.kids+self.obstacles+self.dirt+1>=m*n:
             raise Exception("INVALID ENVIRONMENT SPECIFICATIONS")
         self.environment=[]

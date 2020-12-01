@@ -52,7 +52,13 @@ def decide_with_best_priority(env, x, y, new_x, new_y, steps):
     else:
         return decide_with_dirt_priority(env, x, y, new_x, new_y, steps)    
 
-def action(env, steps=0, decide=decide_with_kid_priority):
+def action(env, steps=0, _decide="best"):
+    if _decide=="kid":
+        decide=decide_with_kid_priority
+    elif _decide=="dirt":
+        decide=decide_with_dirt_priority
+    else:
+        decide=decide_with_best_priority
     x, y=env.robot_position
     environment=env.environment
     if env.is_dirty(x, y):

@@ -52,7 +52,7 @@ class Simulation:
         self.dirt_percentage=dirt_percentage
         self.kids=kids
         
-    def simulate(self, n, t, verbose=False):
+    def simulate(self, n, t, verbose=False, decide="kid"):
         self.environment=Environment(self.m, self.n, self.kids, self.obstacle_percentage, self.dirt_percentage)
         mean_dirt=0
         for count in range(1,n):
@@ -63,7 +63,7 @@ class Simulation:
                 self.environment.variate()
                 if verbose:
                     print(self.environment)
-            action(self.environment)
+            action(self.environment, decide)
             if verbose:
                 time.sleep(0.8)
             
